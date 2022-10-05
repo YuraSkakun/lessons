@@ -181,9 +181,10 @@ def execute_query(query, *args):
     print(conn)  # <sqlite3.Connection object at 0x7f03a699fc60>
     cur = conn.cursor()
     print(cur)  # <sqlite3.Cursor object at 0x7f03a68ced50>
+    print(args, type(args))
     cur.execute(query, args)   # tut  args  -- tuple  !!!!
     print(cur)  # <sqlite3.Cursor object at 0x7f03a68ced50>
-    records = cur.fetchall()
+    records = cur.fetchall()  # list of tuples !!!
     print(records, type(records))  # [('Bjørn', 'Hansen'), ('Camille', 'Bernard'), ('Dominique', 'Lefebvre')] <class 'list'>
     return records
 
@@ -193,7 +194,9 @@ def execute_query(query, *args):
 @app.route('/get-customers-st-bad')
 def get_customer_st():
     state = request.args.get('state', '')
+    print(state)  # CA" UNION ALL select BillingAddress, Total from invoices --
     query = f'SELECT FirstName, LastName FROM customers WHERE State = "{state}"'  # <--- bad solving,
+    print(query)  # SELECT FirstName, LastName FROM customers WHERE State = "CA" UNION ALL select BillingAddress, Total from invoices --"
     # http://localhost:5000/get-customers-st-bad?state=CA" UNION ALL select BillingAddress, Total from invoices --
     # http://localhost:5000//get-customers-st-bad?state=CA%22%20UNION%20ALL%20select%20BillingAddress,%20Total%20from%20invoices%20--
 
@@ -209,7 +212,9 @@ def get_customer_st():
 @app.route('/get-customers-st-good')
 def get_customers():
     state = request.args.get('state', '')
+    print(state)
     query = 'SELECT FirstName, LastName FROM customers WHERE State = ?'
+    print(query)  # SELECT FirstName, LastName FROM customers WHERE State = ?
     records = execute_query(query, state)
     result = '<br>'.join([
         str(record)
@@ -228,10 +233,11 @@ def get_revenue():
     #     str(record)
     #     for record in records
     # ])
-    print(records)
+    print(records, type(records))  # [(2328.599999999957,)] <class 'list'>
     result = str(records[0][0])  # records here is 1 element(len=1) so use without join !!!!!
     return result
 
 
 
-app.run(debug=True)
+# app.run(debug=True)
+app.run(host="localhost", port=8080, debug=True)
