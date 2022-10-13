@@ -222,6 +222,7 @@ def get_customers():
     ])
     return result
 
+# Примечание 1: В PostgreSQL (UPD: и в MySQL) вместо знака '?' для подстановки используется: %s
 
 
 #######################
@@ -240,4 +241,5 @@ def get_revenue():
 
 
 # app.run(debug=True)
-app.run(host="localhost", port=8080, debug=True)
+# app.run(host="localhost", port=8080, debug=True)
+app.run(host="localhost", port=5000, debug=True)
