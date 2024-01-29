@@ -43,3 +43,4 @@ class B(A1, A2):
 
 b = B()
 print(b.__dict__)
+print(B.mro())
